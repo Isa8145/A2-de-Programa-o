@@ -19,18 +19,35 @@ def quiz():
     st.title("🐶 Quiz: Qual é a raça de cachorro ideal para você?")
     st.write("Responda às perguntas abaixo e descubra a raça de cachorro que mais combina com você!")
 
-    respostas = {
-        'porte': st.selectbox("Porte do cachorro:", ["Pequeno", "Pequeno-Médio", "Médio", "Grande"]),
-        'tipo': st.selectbox("Tipo de cachorro:", ["Caça", "Trabalhador", "Terrier", "Pastor", "Esportista", "Não esportista", "Standart", "Toy"]),
-        'amigavel': st.slider("Nível de amigabilidade:", 1, 5, 3),
-        'treinamento': st.slider("Importância do treinamento:", 1, 5, 3),
-        'tosa': st.selectbox("Necessidade de tosa:", ["Pequena", "Média", "Grande", "Muito grande"]),
-        'criancas': st.radio("Bom com crianças:", ["Sim", "Não", "Sim, mesmo que precise treinar"]),
-        'inteligencia': st.slider("Nível de inteligência:", 1, 5, 3),
-        'pelo': st.selectbox("Processo de troca de pelo:", ["Pequeno", "Médio", "Grande", "Muito grande"])
-    }
+    # Inicializar estado se não existir
+    if 'mostrar_resultado' not in st.session_state:
+        st.session_state.mostrar_resultado = False
+
+    # Armazenar respostas em session_state
+    st.session_state.porte = st.selectbox("Porte do cachorro:", ["Pequeno", "Pequeno-Médio", "Médio", "Grande"], key='porte')
+    st.session_state.tipo = st.selectbox("Tipo de cachorro:", ["Caça", "Trabalhador", "Terrier", "Pastor", "Esportista", "Não esportista", "Standart", "Toy"], key='tipo')
+    st.session_state.amigavel = st.slider("Nível de amigabilidade:", 1, 5, 3, key='amigavel')
+    st.session_state.treinamento = st.slider("Importância do treinamento:", 1, 5, 3, key='treinamento')
+    st.session_state.tosa = st.selectbox("Necessidade de tosa:", ["Pequena", "Média", "Grande", "Muito grande"], key='tosa')
+    st.session_state.criancas = st.radio("Bom com crianças:", ["Sim", "Não", "Sim, mesmo que precise treinar"], key='criancas')
+    st.session_state.inteligencia = st.slider("Nível de inteligência:", 1, 5, 3, key='inteligencia')
+    st.session_state.pelo = st.selectbox("Processo de troca de pelo:", ["Pequeno", "Médio", "Grande", "Muito grande"], key='pelo')
 
     if st.button("🔍 Descobrir minha raça ideal"):
+        st.session_state.mostrar_resultado = True
+
+    if st.session_state.mostrar_resultado:
+        respostas = {
+            'porte': st.session_state.porte,
+            'tipo': st.session_state.tipo,
+            'amigavel': st.session_state.amigavel,
+            'treinamento': st.session_state.treinamento,
+            'tosa': st.session_state.tosa,
+            'criancas': st.session_state.criancas,
+            'inteligencia': st.session_state.inteligencia,
+            'pelo': st.session_state.pelo,
+        }
+
         racas = carregar_dados()
         melhor_raca = None
         melhor_pontos = -1
@@ -73,6 +90,3 @@ def quiz():
             st.markdown(f"[Saiba mais sobre {melhor_raca}]({link})")
         else:
             st.warning("Não conseguimos identificar uma raça ideal com base nas suas respostas. Tente novamente.")
-
-# Executar o quiz
-quiz()
